@@ -1,0 +1,9 @@
+<p><%= flash[:error] %></p>
+
+<h3>Available JS test cases:</h3>
+
+<ul>
+  <% Amalgamate.tests.each do |test| %>
+    <li><%= link_to test.path, "/tests#{test.path}" %></li>
+  <% end %>
+</ul>
