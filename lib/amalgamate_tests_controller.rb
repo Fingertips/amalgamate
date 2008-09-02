@@ -20,7 +20,7 @@ class AmalgamateTestsController < ApplicationController
       @test.setup_controller(self)
       render(@test.render_params)
     else
-      flash[:error] = "Could not find a JS test case for the path \"/#{params_before_js_tests[:path].join('/')}\""
+      flash[:error] = "Could not find an Amalgamate javascript test case for path \"/#{params_before_js_tests[:path].join('/')}\""
       redirect_to tests_url
     end
   end

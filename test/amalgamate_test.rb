@@ -40,7 +40,7 @@ describe "Amalgamate" do
   end
 end
 
-describe "JSTest" do
+describe "Amalgamate::JSTest" do
   include AmalgamateSpecHelper
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::AssetTagHelper

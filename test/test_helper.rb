@@ -42,13 +42,14 @@ module Amalgamate
       if rails_directory
         $:.unshift(File.join(rails_directory, 'activesupport', 'lib'))
         $:.unshift(File.join(rails_directory, 'activerecord', 'lib'))
+        $:.unshift(File.join(rails_directory, 'actionpack', 'lib'))
       else
         require 'rubygems' rescue LoadError
       end
       
-      require 'activesupport'
-      require 'activerecord'
-      require 'actionpack'
+      require 'active_support'
+      require 'active_record'
+      #require 'actionpack'
       require 'action_controller'
       
       require 'rubygems' rescue LoadError
@@ -58,8 +59,19 @@ module Amalgamate
     end
     
     def self.configure_database
-      ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
+      #ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
+      # ActiveRecord::Base.establish_connection(
+      #   :adapter => "mysql",
+      #   :database => "amalgamate_test",
+      #   :user => "root"
+      # )
+      
       ActiveRecord::Migration.verbose = false
+      
+      # logger = Object.new
+      # def logger.debug?; true end
+      # def logger.debug(msg); puts msg end
+      # ActiveRecord::Base.logger = logger
     end
     
     def self.setup_database

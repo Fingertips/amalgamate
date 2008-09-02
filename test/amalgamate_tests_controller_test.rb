@@ -1,17 +1,17 @@
 require File.expand_path('../test_helper', __FILE__)
 require 'amalgamate'
 
-describe "A AmalgamateTestsController, in general", ActionController::TestCase do
+describe "An AmalgamateTestsController, in general", ActionController::TestCase do
   tests AmalgamateTestsController
   include AmalgamateSpecHelper
   
   it "should redirect to the index page when a test could not be found for the path given" do
     get :runner, :path => path_to_param('/turtles/1')
     assert_redirected_to tests_url
-    flash[:error].should == 'Could not find a JS test case for the path "/turtles/1"'
+    flash[:error].should == 'Could not find an Amalgamate javascript test case for path "/turtles/1"'
   end
   
-  it "should show all the available JS test cases" do
+  it "should show all the available Amalgamate javascript test cases" do
     get :index
     
     assert_select "a[href=/tests/members/new]"
@@ -30,12 +30,6 @@ describe "A AmalgamateTestsController, when setting up", ActionController::TestC
     
     Amalgamate.tests.each { |test| test.stubs(:content_for_head).returns('') }
     @new_test, @show_test, @edit_test = Amalgamate.tests
-  end
-  
-  # For some reason, using the prepend_around_filter makes it that the action is called twice..
-  xit "should recognize the correct JSTest instance to use" do
-    @show_test.expects(:render_params)
-    get :runner, :path => path_to_param('/members/1')
   end
   
   it "should render with the correct params" do
@@ -61,9 +55,9 @@ describe "A AmalgamateTestsController, when setting up", ActionController::TestC
   
   # Not sure how to test this. It works when using it, but not in this test... :-/
   xit "should wrap the setup code in a transaction so we don't leave the database in a altered state" do
-    lambda {
+    assert_no_difference('Member.count') do
       get :runner, :path => path_to_param('/members/1')
-    }.should.not.differ('Member.count')
+    end
   end
 end
 
