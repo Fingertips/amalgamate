@@ -1,10 +1,20 @@
 require 'amalgamate'
-#require File.join(RAILS_ROOT, 'test', 'js_tests_helper')
+
+begin
+  require 'application'
+  # Try to require app/controllers/amalgamate_tests_controller.rb
+  # which is the file where the user can open the controller class
+  # and add code needed for the controller to work in her app.
+  require 'amalgamate_tests_controller'
+rescue LoadError
+end
 
 class AmalgamateTestsController < ApplicationController
   VIEW_PATH = File.expand_path('../../views/', __FILE__)
   
   prepend_around_filter :call_action_within_transaction
+  Amalgamate.load_test_cases
+  helper :all
   
   class << self
     attr_writer :controller_path

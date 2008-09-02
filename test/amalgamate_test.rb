@@ -7,6 +7,17 @@ describe "Amalgamate" do
     @new_test, @show_test, @edit_test = Amalgamate.tests
   end
   
+  it "should load a file defining the test cases for the application" do
+    tests_before = Amalgamate.tests.dup
+    deps_before = Amalgamate.default_dependencies.dup
+    
+    Amalgamate.load_test_cases
+    Amalgamate.tests.length.should.be 6
+    
+    Amalgamate.instance_variable_set(:@tests, tests_before)
+    Amalgamate.instance_variable_set(:@default_dependencies, deps_before)
+  end
+  
   it "should have recorded which paths we have configuration for" do
     Amalgamate.tests.length.should.be 3
     Amalgamate.tests.map(&:path).should == %w{ /members/new /members/1 /members/1/edit }
@@ -31,7 +42,7 @@ describe "Amalgamate" do
   end
   
   it "should add default dependencies to each test case" do
-    Amalgamate.default_dependecies.should == %w{ moksi meti }
+    Amalgamate.default_dependencies.should == %w{ moksi meti }
     
     Amalgamate.tests.each do |test|
       test.dependencies.should.include 'moksi'

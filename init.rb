@@ -1,1 +1,1 @@
-# Include hook code here
+require File.expand_path('../lib/amalgamate_tests_controller', __FILE__)

@@ -8,12 +8,12 @@ module Amalgamate
     
     attr_reader :test_case, :path, :template, :dependencies, :setup_proc
     
-    def initialize(test_case_and_path, default_dependecies)
+    def initialize(test_case_and_path, default_dependencies)
       @test_case, @path = test_case_and_path.to_a.first
       @test_case = "#{@test_case}_test"
       
       @dependencies = %w{ unittest }
-      @dependencies.concat(default_dependecies) unless default_dependecies.blank?
+      @dependencies.concat(default_dependencies) unless default_dependencies.blank?
     end
     
     # Takes a controller instance and sets it up for the test case.
@@ -104,6 +104,11 @@ module Amalgamate
   end
   
   class << self
+    # Loads the file defining your test cases from: "test/javascript/amalgamate_test_cases.rb"
+    def load_test_cases
+      load File.join(RAILS_ROOT, 'test', 'javascript', 'amalgamate_test_cases.rb')
+    end
+    
     # Returns the array of defined JSTest instances.
     def tests
       @tests ||= []
@@ -125,18 +130,18 @@ module Amalgamate
     #     end
     #   end
     def testing(test_case_and_path, &block)
-      test = JSTest.new(test_case_and_path, @default_dependecies)
+      test = JSTest.new(test_case_and_path, @default_dependencies)
       test.instance_eval(&block)
       tests << test
     end
     
-    # The array of default dependecies.
-    attr_reader :default_dependecies
+    # The array of default dependencies.
+    attr_reader :default_dependencies
     
     # Add a default dependecy. All tests defined from that point on will receive this dependecy.
     # See <tt>JSTest#depends_on</tt> for more info.
     def depends_on(dep)
-      (@default_dependecies ||= []) << dep
+      (@default_dependencies ||= []) << dep
     end
     
     def test_for_path_array(path_array)
