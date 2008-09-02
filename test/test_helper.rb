@@ -7,12 +7,10 @@ module Amalgamate
     PLUGIN_ROOT = File.expand_path('../../', __FILE__)
     
     def self.rails_directory
-      if File.basename(File.dirname(PLUGIN_ROOT)) == 'plugins'
-        if File.exist?(VENDOR_RAILS)
-          VENDOR_RAILS
-        elsif File.exist?(OTHER_RAILS)
-          OTHER_RAILS
-        end
+      if File.exist?(VENDOR_RAILS)
+        VENDOR_RAILS
+      elsif File.exist?(OTHER_RAILS)
+        OTHER_RAILS
       end
     end
     
@@ -43,13 +41,13 @@ module Amalgamate
         $:.unshift(File.join(rails_directory, 'activesupport', 'lib'))
         $:.unshift(File.join(rails_directory, 'activerecord', 'lib'))
         $:.unshift(File.join(rails_directory, 'actionpack', 'lib'))
+        $:.unshift(File.join(PLUGIN_ROOT, 'lib'))
       else
         require 'rubygems' rescue LoadError
       end
       
       require 'active_support'
       require 'active_record'
-      #require 'actionpack'
       require 'action_controller'
       
       require 'rubygems' rescue LoadError
@@ -59,7 +57,7 @@ module Amalgamate
     end
     
     def self.configure_database
-      #ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
+      ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
       # ActiveRecord::Base.establish_connection(
       #   :adapter => "mysql",
       #   :database => "amalgamate_test",

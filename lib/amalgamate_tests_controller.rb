@@ -4,6 +4,8 @@ require 'amalgamate'
 class AmalgamateTestsController < ApplicationController
   VIEW_PATH = File.expand_path('../../views/', __FILE__)
   
+  prepend_around_filter :call_action_within_transaction
+  
   class << self
     attr_writer :controller_path
     def controller_path
@@ -32,9 +34,9 @@ class AmalgamateTestsController < ApplicationController
   
   private
   
-  prepend_around_filter do |controller, action|
+  def call_action_within_transaction
     ActiveRecord::Base.transaction do
-      action.call
+      yield
       raise ActiveRecord::Rollback
     end
   end

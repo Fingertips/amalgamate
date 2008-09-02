@@ -53,8 +53,8 @@ describe "A AmalgamateTestsController, when setting up", ActionController::TestC
     @controller.params.should == HashWithIndifferentAccess.new(:controller => 'members', :action => 'show', :id => '1')
   end
   
-  # Not sure how to test this. It works when using it, but not in this test... :-/
-  xit "should wrap the setup code in a transaction so we don't leave the database in a altered state" do
+  it "should wrap the setup code in a transaction so we don't leave the database in a altered state" do
+    @controller.stubs(:performed?).returns(true)
     assert_no_difference('Member.count') do
       get :runner, :path => path_to_param('/members/1')
     end
