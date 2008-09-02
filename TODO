@@ -1,0 +1,3 @@
+- Add test descriptions to the tests index page.
+  So instead of just the path say something like: "Tests googlemaps.js on /members/1/edit."
+- Allow the user to add a description for a testcase.

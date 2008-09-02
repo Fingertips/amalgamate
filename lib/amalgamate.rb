@@ -60,13 +60,21 @@ module Amalgamate
       File.join(RAILS_ROOT, 'test', 'javascript', "#{test_case}.js")
     end
     
+    def test_log_div
+      "Element.insert(document.getElementsByTagName('body')[0], { bottom: '<div id=\"testlog\"></div>' });"
+    end
+    
     def test_case_contents
-      javascript_tag File.read(test_case_path)
+      File.read(test_case_path)
+    end
+    
+    def javascript
+      javascript_tag "document.observe('dom:loaded', function() {\n  #{test_log_div}\n\n  #{test_case_contents}\n});"
     end
     
     # Returns the content that should be included in the head of the document.
     def content_for_head
-      "#{include_tag}\n#{test_case_contents}"
+      "#{include_tag}\n#{javascript}"
     end
     
     # Returns params that specify the template to render.

@@ -55,6 +55,7 @@ describe "Amalgamate::JSTest" do
   include AmalgamateSpecHelper
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::AssetTagHelper
+  include ActionView::Helpers::JavaScriptHelper
   
   before do
     Amalgamate::Initializer.setup_database
@@ -78,22 +79,34 @@ describe "Amalgamate::JSTest" do
     @edit_test.render_params.should == { :template => 'members/edit' }
   end
   
+  it "should return the proper javascript to build a test run log div at the end of the body" do
+    expected = "Element.insert(document.getElementsByTagName('body')[0], { bottom: '<div id=\"testlog\"></div>' });"
+    @new_test.test_log_div.should == expected
+  end
+  
   it "should return the proper javascript include tags for inclusion in the page" do
     @new_test.include_tag.should == javascript_include_tag('unittest', 'moksi', 'meti')
     @edit_test.include_tag.should == javascript_include_tag('unittest', 'moksi', 'meti', 'googlemaps')
   end
   
   it "should return the contents of the test case file for inclusion in the page" do
-    javascript = '$("foo").hide();'
-    File.expects(:read).with(@edit_test.test_case_path).returns(javascript)
-    @edit_test.test_case_contents.should == "<script type=\"text/javascript\">\n//<![CDATA[\n#{javascript}\n//]]>\n</script>"
+    File.expects(:read).with(@edit_test.test_case_path).returns('$("foo").hide();')
+    @edit_test.test_case_contents.should == '$("foo").hide();'
+  end
+  
+  it "should return a javascript tag with code that makes the test runner run after the DOM has loaded" do
+    @edit_test.stubs(:test_log_div).returns('<testlog>')
+    @edit_test.stubs(:test_case_contents).returns('<contents>')
+    
+    expected = javascript_tag("document.observe('dom:loaded', function() {\n  <testlog>\n\n  <contents>\n});")
+    @edit_test.javascript.should == expected
   end
   
   it "should return both the include tags and the test case file content" do
     @new_test.stubs(:include_tag).returns('<include>')
-    @new_test.stubs(:test_case_contents).returns('<contents>')
+    @new_test.stubs(:javascript).returns('<javascript>')
     
-    @new_test.content_for_head.should == "<include>\n<contents>"
+    @new_test.content_for_head.should == "<include>\n<javascript>"
   end
   
   it "should take a setup block" do
