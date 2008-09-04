@@ -2,7 +2,14 @@ Amalgamate
 ==========
 
 - Add routes
-- Create app/controllers/amalgamate_tests_controller.rb for extra app specific code
+- Create app/controllers/amalgamate_tests_controller.rb for extra app specific code:
+
+  # Need to find a better way to make sure the plugin controller file gets reloaded as well...
+  load File.join(RAILS_ROOT, 'vendor', 'plugins', 'amalgamate', 'lib', 'amalgamate_tests_controller.rb')
+  
+  class AmalgamateTestsController < ApplicationController
+    allow_access :all
+  end
 
 Example
 =======

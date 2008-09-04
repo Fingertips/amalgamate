@@ -10,6 +10,8 @@ rescue LoadError
 end
 
 class AmalgamateTestsController < ApplicationController
+  unloadable
+  
   VIEW_PATH = File.expand_path('../../views/', __FILE__)
   
   prepend_around_filter :call_action_within_transaction
